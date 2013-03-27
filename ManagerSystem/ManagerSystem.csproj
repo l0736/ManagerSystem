@@ -82,7 +82,7 @@
       <DependentUpon>tooltip.cs</DependentUpon>
     </Compile>
     <Compile Include="Module\DataPath.cs" />
-    <Compile Include="Module\MySQL.cs" />
+    <Compile Include="Module\MySQLT.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form\AccessMaterialForm.resx">

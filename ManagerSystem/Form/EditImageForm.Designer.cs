@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditImageForm));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripSplitLoad = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownList = new System.Windows.Forms.ToolStripDropDownButton();
@@ -42,6 +43,12 @@
             this.pictureBoxList1 = new System.Windows.Forms.PictureBox();
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.Angle90ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Angle180ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Angle270ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Angle360ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxList5)).BeginInit();
@@ -58,7 +65,9 @@
             this.toolStripSplitLoad,
             this.toolStripDropDownList,
             this.toolStripDropDownTag,
-            this.toolStripDropDownSave});
+            this.toolStripDropDownSave,
+            this.toolStripButton1,
+            this.toolStripDropDownButton1});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1014, 25);
@@ -185,6 +194,58 @@
             this.timer1.Interval = 1500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "toolStripButton1";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Angle90ToolStripMenuItem,
+            this.Angle180ToolStripMenuItem,
+            this.Angle270ToolStripMenuItem,
+            this.Angle360ToolStripMenuItem});
+            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(69, 22);
+            this.toolStripDropDownButton1.Text = "圖片翻轉";
+            // 
+            // Angle90ToolStripMenuItem
+            // 
+            this.Angle90ToolStripMenuItem.Name = "Angle90ToolStripMenuItem";
+            this.Angle90ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.Angle90ToolStripMenuItem.Text = "90度";
+            this.Angle90ToolStripMenuItem.Click += new System.EventHandler(this.Angle90ToolStripMenuItem_Click);
+            // 
+            // Angle180ToolStripMenuItem
+            // 
+            this.Angle180ToolStripMenuItem.Name = "Angle180ToolStripMenuItem";
+            this.Angle180ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.Angle180ToolStripMenuItem.Text = "180度";
+            this.Angle180ToolStripMenuItem.Click += new System.EventHandler(this.Angle180ToolStripMenuItem_Click);
+            // 
+            // Angle270ToolStripMenuItem
+            // 
+            this.Angle270ToolStripMenuItem.Name = "Angle270ToolStripMenuItem";
+            this.Angle270ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.Angle270ToolStripMenuItem.Text = "270度";
+            this.Angle270ToolStripMenuItem.Click += new System.EventHandler(this.Angle270ToolStripMenuItem_Click);
+            // 
+            // Angle360ToolStripMenuItem
+            // 
+            this.Angle360ToolStripMenuItem.Name = "Angle360ToolStripMenuItem";
+            this.Angle360ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.Angle360ToolStripMenuItem.Text = "360度";
+            this.Angle360ToolStripMenuItem.Click += new System.EventHandler(this.Angle360ToolStripMenuItem_Click);
+            // 
             // EditImageForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -228,5 +289,11 @@
         private System.Windows.Forms.PictureBox pictureBoxList1;
         private System.Windows.Forms.ToolStripDropDownButton toolStripSplitLoad;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripMenuItem Angle90ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Angle180ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Angle270ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Angle360ToolStripMenuItem;
     }
 }

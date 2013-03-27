@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -15,9 +16,7 @@ namespace ManagerSystem
         private static PictureBox[] picBoxList = new PictureBox[5];
         private static Dictionary<int, String> imagesDic = new Dictionary<int, string>();
         private static Boolean isTag = false;
-
         private static Label shareLabel = null;
-        private static MySqlConnection conn;
         private static String tempLabel;
 
         public EditImageForm()
@@ -136,6 +135,14 @@ namespace ManagerSystem
                 index++;
             }
 
+            foreach (PictureBox pic in picBoxList)
+            {
+                if (pic.Image != null)
+                {
+                    pic.Image = null;
+                }
+            }
+
             for (index = 0; index < imagesDic.Values.Count; index++)
             {
                 picBoxList[index].Image = Image.FromFile(imagesDic[index]);
@@ -239,6 +246,60 @@ namespace ManagerSystem
             {
                 MessageBox.Show("檔案可能損毀或建立了");
             }
+        }
+
+        //計算旋轉後影像Size
+        private Size CalculateNewSize(int width, int height, double RotateAngle)
+        {
+            double r = Math.Sqrt(Math.Pow((double)width / 2d, 2d) + Math.Pow((double)height / 2d, 2d)); //半徑L
+            double OriginalAngle = Math.Acos((width / 2d) / r) / Math.PI * 180d;  //對角線和X軸的角度θ
+            double minW = 0d, maxW = 0d, minH = 0d, maxH = 0d; //最大和最小的 X、Y座標
+            double[] drawPoint = new double[4];
+
+            drawPoint[0] = (-OriginalAngle + RotateAngle) * Math.PI / 180d;
+            drawPoint[1] = (OriginalAngle + RotateAngle) * Math.PI / 180d;
+            drawPoint[2] = (180f - OriginalAngle + RotateAngle) * Math.PI / 180d;
+            drawPoint[3] = (180f + OriginalAngle + RotateAngle) * Math.PI / 180d;
+
+            foreach (double point in drawPoint) //由四個角的點算出X、Y的最大值及最小值
+            {
+                double x = r * Math.Cos(point);
+                double y = r * Math.Sin(point);
+
+                if (x < minW)
+                    minW = x;
+                if (x > maxW)
+                    maxW = x;
+                if (y < minH)
+                    minH = y;
+                if (y > maxH)
+                    maxH = y;
+            }
+
+            return new Size((int)(maxW - minW), (int)(maxH - minH));
+        }
+
+        //旋轉圖片之函式
+        //參數    image：要旋轉的圖片  RotateAngle：旋轉角度
+        private Bitmap RotateBitmap(Bitmap image, float RotateAngle)
+        {
+            Size newSize = CalculateNewSize(image.Width, image.Height, RotateAngle);
+            Bitmap rotatedBmp = new Bitmap(newSize.Width, newSize.Height);
+            PointF centerPoint = new PointF((float)rotatedBmp.Width / 2f, (float)rotatedBmp.Height / 2f);
+            Graphics g = Graphics.FromImage(rotatedBmp);
+
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            g.TranslateTransform(centerPoint.X, centerPoint.Y);
+            g.RotateTransform(RotateAngle);
+            g.TranslateTransform(-centerPoint.X, -centerPoint.Y);
+
+            g.DrawImage(image, (float)(newSize.Width - image.Width) / 2f, (float)(newSize.Height - image.Height) / 2f, image.Width, image.Height);
+            g.Dispose();
+
+            return rotatedBmp;
         }
 
         private void pictureBox_Click(object sender, EventArgs e)
@@ -394,7 +455,7 @@ namespace ManagerSystem
         {
             String sql = "SELECT * FROM inventory WHERE ProductNumber='" + this.Text.ToString() + "'";
 
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            MySqlCommand cmd = new MySqlCommand(sql, MySQLT.getMySqlConnection());
             ToolTip tip = new ToolTip();
             tip.ForeColor = Color.Red;
             tip.BackColor = Color.DarkBlue;
@@ -443,13 +504,55 @@ namespace ManagerSystem
         private void EditImageForm_Load(object sender, EventArgs e)
         {
             ManagerSystem.Module.MySQLT.setDataBase("127.0.0.1", "managersystem", "123456789", "root", 3306);
-            conn = MySQLT.getMySqlConnection();
-            conn.Open();
         }
 
         private void EditImageForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            conn.Close();
+            MySQLT.Close();
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void Angle90ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
+            {
+                Bitmap bitmap = new Bitmap(pictureBoxMain.Image);
+                bitmap = RotateBitmap(bitmap, 90f);
+                pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+            }
+        }
+
+        private void Angle180ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
+            {
+                Bitmap bitmap = new Bitmap(pictureBoxMain.Image);
+                bitmap = RotateBitmap(bitmap, 180f);
+                pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+            }
+        }
+
+        private void Angle270ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
+            {
+                Bitmap bitmap = new Bitmap(pictureBoxMain.Image);
+                bitmap = RotateBitmap(bitmap, 270f);
+                pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+            }
+        }
+
+        private void Angle360ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
+            {
+                Bitmap bitmap = new Bitmap(pictureBoxMain.Image);
+                bitmap = RotateBitmap(bitmap, 360f);
+                pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+            }
         }
     }
 }
