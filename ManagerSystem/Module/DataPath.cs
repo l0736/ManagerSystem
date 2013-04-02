@@ -8,29 +8,34 @@ namespace ManagerSystem.Module
 {
     internal abstract class DataPath
     {
-        protected static internal String getProjectPath()
+        protected static internal String GetProjectPath()
         {
             return Directory.GetCurrentDirectory();
         }
 
-        protected static internal String getDesktopPath()
+        protected static internal String GetDesktopPath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         }
 
-        protected static internal String getImagePath()
+        protected static internal String GetImagePath()
         {
-            return getProjectPath() + @"\Image";
+            return GetProjectPath() + @"\Image";
         }
 
-        protected static internal String getImagePath(String name)
+        protected static internal String GetImagePath(String name)
         {
-            return getImagePath() + @"\" + name;
+            return GetImagePath() + @"\" + name;
         }
 
-        protected static internal String getNewFolder(String newName)
+        protected static internal String GetNewFolder(String newName)
         {
-            return getProjectPath() + @"\Image\" + newName;
+            return GetProjectPath() + @"\Image\" + newName;
+        }
+
+        protected internal static String GetConfigPath(String projectName, String configName)
+        {
+            return GetNewFolder(projectName) + @"\" + configName;
         }
     }
 }

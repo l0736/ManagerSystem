@@ -66,12 +66,14 @@
             // 
             // button3
             // 
+            this.button3.Font = new System.Drawing.Font("微軟正黑體", 21.75F);
             this.button3.Location = new System.Drawing.Point(628, 80);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(250, 200);
             this.button3.TabIndex = 13;
-            this.button3.Text = "button3";
+            this.button3.Text = "查詢領料紀錄";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -176,6 +178,7 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.ResumeLayout(false);
 
         }

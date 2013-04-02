@@ -28,12 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditImageForm));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripSplitLoad = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownList = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownTag = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDropDownSave = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripSplitButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.Angle90ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Angle180ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Angle270ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Angle360ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel = new System.Windows.Forms.Panel();
             this.pictureBoxList5 = new System.Windows.Forms.PictureBox();
             this.pictureBoxList4 = new System.Windows.Forms.PictureBox();
@@ -41,7 +46,6 @@
             this.pictureBoxList2 = new System.Windows.Forms.PictureBox();
             this.pictureBoxList1 = new System.Windows.Forms.PictureBox();
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.toolStrip.SuspendLayout();
             this.panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxList5)).BeginInit();
@@ -58,7 +62,8 @@
             this.toolStripSplitLoad,
             this.toolStripDropDownList,
             this.toolStripDropDownTag,
-            this.toolStripDropDownSave});
+            this.toolStripDropDownSave,
+            this.toolStripSplitButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1014, 25);
@@ -106,6 +111,49 @@
             this.toolStripDropDownSave.ShowDropDownArrow = false;
             this.toolStripDropDownSave.Size = new System.Drawing.Size(20, 22);
             this.toolStripDropDownSave.Text = "儲存零件圖";
+            this.toolStripDropDownSave.Click += new System.EventHandler(this.toolStripDropDownSave_Click);
+            // 
+            // toolStripSplitButton
+            // 
+            this.toolStripSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Angle90ToolStripMenuItem,
+            this.Angle180ToolStripMenuItem,
+            this.Angle270ToolStripMenuItem,
+            this.Angle360ToolStripMenuItem});
+            this.toolStripSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton.Image")));
+            this.toolStripSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripSplitButton.Name = "toolStripSplitButton";
+            this.toolStripSplitButton.Size = new System.Drawing.Size(72, 22);
+            this.toolStripSplitButton.Text = "選轉圖片";
+            // 
+            // Angle90ToolStripMenuItem
+            // 
+            this.Angle90ToolStripMenuItem.Name = "Angle90ToolStripMenuItem";
+            this.Angle90ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.Angle90ToolStripMenuItem.Text = "旋轉90度";
+            this.Angle90ToolStripMenuItem.Click += new System.EventHandler(this.Angle90ToolStripMenuItem_Click);
+            // 
+            // Angle180ToolStripMenuItem
+            // 
+            this.Angle180ToolStripMenuItem.Name = "Angle180ToolStripMenuItem";
+            this.Angle180ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.Angle180ToolStripMenuItem.Text = "旋轉180度";
+            this.Angle180ToolStripMenuItem.Click += new System.EventHandler(this.Angle180ToolStripMenuItem_Click);
+            // 
+            // Angle270ToolStripMenuItem
+            // 
+            this.Angle270ToolStripMenuItem.Name = "Angle270ToolStripMenuItem";
+            this.Angle270ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.Angle270ToolStripMenuItem.Text = "旋轉270度";
+            this.Angle270ToolStripMenuItem.Click += new System.EventHandler(this.Angle270ToolStripMenuItem_Click);
+            // 
+            // Angle360ToolStripMenuItem
+            // 
+            this.Angle360ToolStripMenuItem.Name = "Angle360ToolStripMenuItem";
+            this.Angle360ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.Angle360ToolStripMenuItem.Text = "旋轉360度";
+            this.Angle360ToolStripMenuItem.Click += new System.EventHandler(this.Angle360ToolStripMenuItem_Click);
             // 
             // panel
             // 
@@ -168,7 +216,7 @@
             this.pictureBoxList1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxList1.TabIndex = 0;
             this.pictureBoxList1.TabStop = false;
-            this.pictureBoxList1.Click += new System.EventHandler(this.pictureBoxList_Click);
+
             // 
             // pictureBoxMain
             // 
@@ -179,11 +227,6 @@
             this.pictureBoxMain.TabIndex = 2;
             this.pictureBoxMain.TabStop = false;
             this.pictureBoxMain.DoubleClick += new System.EventHandler(this.pictureBoxMain_DoubleClick);
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 1500;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // EditImageForm
             // 
@@ -196,8 +239,6 @@
             this.Name = "EditImageForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EditImage";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.EditImageForm_FormClosed);
-            this.Load += new System.EventHandler(this.EditImageForm_Load);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.EditImageForm_MouseMove);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
@@ -227,6 +268,10 @@
         private System.Windows.Forms.PictureBox pictureBoxList2;
         private System.Windows.Forms.PictureBox pictureBoxList1;
         private System.Windows.Forms.ToolStripDropDownButton toolStripSplitLoad;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton;
+        private System.Windows.Forms.ToolStripMenuItem Angle90ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Angle180ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Angle270ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Angle360ToolStripMenuItem;
     }
 }

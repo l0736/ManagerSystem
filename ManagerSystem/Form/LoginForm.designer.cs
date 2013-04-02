@@ -35,6 +35,7 @@
             this.Login_textBox_Password = new System.Windows.Forms.TextBox();
             this.Login_button_Login = new System.Windows.Forms.Button();
             this.Login_button_Exit = new System.Windows.Forms.Button();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // label1
@@ -85,7 +86,7 @@
             // Login_button_Login
             // 
             this.Login_button_Login.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.Login_button_Login.Location = new System.Drawing.Point(51, 204);
+            this.Login_button_Login.Location = new System.Drawing.Point(55, 207);
             this.Login_button_Login.Name = "Login_button_Login";
             this.Login_button_Login.Size = new System.Drawing.Size(75, 31);
             this.Login_button_Login.TabIndex = 18;
@@ -96,7 +97,7 @@
             // Login_button_Exit
             // 
             this.Login_button_Exit.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.Login_button_Exit.Location = new System.Drawing.Point(174, 204);
+            this.Login_button_Exit.Location = new System.Drawing.Point(173, 207);
             this.Login_button_Exit.Name = "Login_button_Exit";
             this.Login_button_Exit.Size = new System.Drawing.Size(75, 31);
             this.Login_button_Exit.TabIndex = 19;
@@ -104,11 +105,23 @@
             this.Login_button_Exit.UseVisualStyleBackColor = true;
             this.Login_button_Exit.Click += new System.EventHandler(this.button_Exit_Click);
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(159, 177);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(89, 12);
+            this.linkLabel1.TabIndex = 20;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "還沒辦帳號嗎？";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.Login_button_Exit);
             this.Controls.Add(this.Login_button_Login);
             this.Controls.Add(this.Login_textBox_Password);
@@ -119,7 +132,7 @@
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "login_system";
-            
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,5 +151,6 @@
         private System.Windows.Forms.TextBox Login_textBox_Password;
         private System.Windows.Forms.Button Login_button_Login;
         private System.Windows.Forms.Button Login_button_Exit;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

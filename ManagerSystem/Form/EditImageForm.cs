@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -15,10 +16,10 @@ namespace ManagerSystem
         private static PictureBox[] picBoxList = new PictureBox[5];
         private static Dictionary<int, String> imagesDic = new Dictionary<int, string>();
         private static Boolean isTag = false;
-
+        private static Boolean isInit = false;
         private static Label shareLabel = null;
-        private static MySqlConnection conn;
         private static String tempLabel;
+        private static String projectName;
 
         public EditImageForm()
         {
@@ -60,9 +61,9 @@ namespace ManagerSystem
 
         private void setListNmae()
         {
-            if (Directory.Exists(DataPath.getImagePath()))
+            if (Directory.Exists(DataPath.GetImagePath()))
             {
-                string[] dirs = Directory.GetDirectories(DataPath.getImagePath());
+                string[] dirs = Directory.GetDirectories(DataPath.GetImagePath());
 
                 if (dirs.Length >= 1)
                 {
@@ -122,23 +123,35 @@ namespace ManagerSystem
         {
             //取得MenuItem Name
             String name = ((ToolStripMenuItem)sender).Text;
-            pictureBoxMain.Enabled = true;
-            panel.Enabled = true;
+            projectName = name;
 
             //取得資料夾底下所有檔案
-            string[] dirlist = Directory.GetFiles(DataPath.getImagePath(name));
-
-            int index = 0;
-            imagesDic = new Dictionary<int, string>();
-            foreach (string str in dirlist)
+            string[] dirlist = Directory.GetFiles(DataPath.GetImagePath(name));
+            if (dirlist.Length > 0)
             {
-                imagesDic.Add(index, str);
-                index++;
-            }
+                pictureBoxMain.Enabled = true;
+                panel.Enabled = true;
+                int index = 0;
+                imagesDic = new Dictionary<int, string>();
+                foreach (string str in dirlist)
+                {
+                    imagesDic.Add(index, str);
+                    index++;
+                }
 
-            for (index = 0; index < imagesDic.Values.Count; index++)
-            {
-                picBoxList[index].Image = Image.FromFile(imagesDic[index]);
+                for (index = 0; index < imagesDic.Values.Count; index++)
+                {
+                    if (imagesDic[index].ToString().EndsWith(".jpeg"))
+                    {
+                        FileStream fs = new FileStream(imagesDic[index], FileMode.Open);
+                        Byte[] data = new Byte[fs.Length];
+                        fs.Read(data, 0, data.Length);
+                        fs.Close();
+                        MemoryStream memory = new MemoryStream(data);
+                        picBoxList[index].Image = Image.FromStream(memory);
+                        memory.Dispose();
+                    }
+                }
             }
         }
 
@@ -146,7 +159,7 @@ namespace ManagerSystem
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "PDF|*.pdf";
-            fileDialog.InitialDirectory = DataPath.getDesktopPath();
+            fileDialog.InitialDirectory = DataPath.GetDesktopPath();
             fileDialog.RestoreDirectory = true;
 
             //多重選擇
@@ -175,9 +188,9 @@ namespace ManagerSystem
             Acrobat.CAcroRect pdfRect = null;
 
             //判斷資料夾是否重複建立
-            if (!Directory.Exists(DataPath.getNewFolder(name)))
+            if (!Directory.Exists(DataPath.GetNewFolder(name)))
             {
-                Directory.CreateDirectory((DataPath.getNewFolder(name)));
+                Directory.CreateDirectory((DataPath.GetNewFolder(name)));
             }
 
             Acrobat.CAcroPDDoc pdfDoc = (Acrobat.CAcroPDDoc)Microsoft.VisualBasic.Interaction.CreateObject("AcroExch.PDDoc", "");
@@ -216,7 +229,7 @@ namespace ManagerSystem
 
                     //Get Image
                     Bitmap pdfBitmap = (Bitmap)loClipboardData.GetData(DataFormats.Bitmap);
-                    String fileName = DataPath.getNewFolder(name) + @"\" + (index + 1) + ".jpeg";
+                    String fileName = DataPath.GetNewFolder(name) + @"\" + (index + 1) + ".jpeg";
 
                     //沒有重複新增相同影像
                     if (!File.Exists(fileName))
@@ -252,7 +265,85 @@ namespace ManagerSystem
 
                     //將點擊的照片給予主照片區
                     pictureBoxMain.Image = ((PictureBox)sender).Image;
+                    this.pictureBoxMain.Image = ((PictureBox)sender).Image;
+                    ReadConfig(this.pictureBoxMain.Controls);
                 }
+            }
+        }
+
+        private void ReadConfig(Control.ControlCollection controls)
+        {
+            String configPath = DataPath.GetConfigPath(projectName, "pic.config");
+            StreamReader reader;
+
+            if (File.Exists(configPath))
+            {
+                reader = new StreamReader(configPath);
+                String str;
+                while ((str = reader.ReadLine()) != null)
+                {
+                    try
+                    {
+                        if (str.Equals("[0]") || str.Equals("END"))
+                        {
+                        }
+                        else
+                        {
+                            String[] ary = str.Split(',');
+                            Label label = new Label();
+                            label.Text = ary[0];
+                            label.Location = new Point(Convert.ToInt32(ary[1]), Convert.ToInt32(ary[2]));
+                            label.SendToBack();
+                            label.DoubleClick += new EventHandler(label_DoubleClick);
+                            label.MouseDown += new MouseEventHandler(label_MouseDown);
+                            label.BackColor = Color.White;
+                            label.AutoSize = true;
+                            controls.Add(label);
+                        }
+                    }
+                    catch (IndexOutOfRangeException ex)
+                    {
+                    }
+                }
+                reader.Close();
+            }
+        }
+
+        private void SaveConfig(Control.ControlCollection controls)
+        {
+            try
+            {
+                StreamReader reader;
+                String configPath = DataPath.GetConfigPath(projectName, "pic.config");
+                if (!File.Exists(configPath))
+                {
+                    File.Create(configPath);
+                    reader = new StreamReader(configPath);
+                }
+                else
+                {
+                    reader = new StreamReader(configPath);
+                }
+                if (reader.ReadToEnd().Length > 0)
+                {
+                    String oldData = reader.ReadToEnd();
+                }
+                reader.Close();
+                int index = 0;
+                StreamWriter writer = new StreamWriter(configPath);
+                writer.WriteLine("[" + index + "]");
+                foreach (Control con in controls)
+                {
+                    if (con.GetType() == typeof(Label))
+                    {
+                        writer.WriteLine(((Label)con).Text + "," + ((Label)con).Location.X + "," + ((Label)con).Location.Y);
+                    }
+                }
+                writer.WriteLine("[END]");
+                writer.Close();
+            }
+            catch (IOException ex)
+            {
             }
         }
 
@@ -275,13 +366,21 @@ namespace ManagerSystem
             //    label.Location = new Point(e.X, e.Y);
         }
 
+        /*
         private void pictureBoxList_Click(object sender, EventArgs e)
         {
             if (((PictureBox)sender).Image != null)
             {
                 this.pictureBoxMain.Controls.Clear();
-                pictureBoxMain.Image = ((PictureBox)sender).Image;
+                newImage(sender);
             }
+        }
+        */
+
+        private void newImage(object sender)
+        {
+            this.pictureBoxMain.Image = ((PictureBox)sender).Image;
+            ReadConfig(this.pictureBoxMain.Controls);
         }
 
         private void allObjectClick(object sender, EventArgs e)
@@ -304,8 +403,7 @@ namespace ManagerSystem
                 //Initialization label
                 Label label = new Label();
                 label.DoubleClick += new EventHandler(label_DoubleClick);
-                label.MouseLeave += new EventHandler(label_MouseLeave);
-                label.MouseHover += new EventHandler(label_MouseHover);
+                label.MouseDown += new MouseEventHandler(label_MouseDown);
                 label.BackColor = Color.White;
                 label.BringToFront();
                 label.AutoSize = true;
@@ -327,7 +425,10 @@ namespace ManagerSystem
 
         private void setShareLabel(Label label)
         {
-            shareLabel = label;
+            if (label != null)
+            {
+                shareLabel = label;
+            }
         }
 
         private void setShareString(String str)
@@ -340,10 +441,13 @@ namespace ManagerSystem
             else
             {
                 //如果標籤為空
-                if (shareLabel.Text == "")
+                if (shareLabel.Text.Equals(""))
                 {
-                    //則代表沒有輸入文字並且釋放資源
-                    shareLabel.Dispose();
+                    if (isInit == false)
+                    {
+                        //則代表沒有輸入文字並且釋放資源
+                        shareLabel.Dispose();
+                    }
                 }
                 else
                 {
@@ -360,7 +464,7 @@ namespace ManagerSystem
             TextBox point = (TextBox)sender;
             if (e.KeyCode == Keys.Enter)
             {
-                if (point.Text != "")
+                if (!point.Text.Equals(""))
                 {
                     //Share data
                     setShareString(point.Text);
@@ -369,10 +473,22 @@ namespace ManagerSystem
                     point.Dispose();
                 }
             }
-            else if (e.KeyCode == Keys.Escape)
+        }
+
+        private void label_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Clicks == 2 && e.Button == MouseButtons.Right)
             {
-                setShareLabel(null);
-                point.Dispose();
+                SearchDataForm form = new SearchDataForm(((Label)sender).Text);
+                try
+                {
+                    form.SendToBack();
+                    form.Show();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    form.Dispose();
+                }
             }
         }
 
@@ -394,7 +510,7 @@ namespace ManagerSystem
         {
             String sql = "SELECT * FROM inventory WHERE ProductNumber='" + this.Text.ToString() + "'";
 
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            MySQLT.cmd = new MySqlCommand(sql, MySQLT.getMySqlConnection());
             ToolTip tip = new ToolTip();
             tip.ForeColor = Color.Red;
             tip.BackColor = Color.DarkBlue;
@@ -402,11 +518,10 @@ namespace ManagerSystem
 
             try
             {
-                MySqlDataReader data = cmd.ExecuteReader();
+                MySqlDataReader data = MySQLT.cmd.ExecuteReader();
 
                 if (data.HasRows == true)
                 {
-                    timer1.Enabled = true;
                     tempLabel = this.Text;
                     tip.SetToolTip(this, "請稍等兩秒後出現編輯視窗");
                 }
@@ -425,31 +540,130 @@ namespace ManagerSystem
             }
         }
 
-        private void label_MouseLeave(object sender, EventArgs e)
+        private Size CalculateNewSize(int width, int height, double RotateAngle)
         {
-            timer1.Enabled = false;
+            double r = Math.Sqrt(Math.Pow((double)width / 2d, 2d) + Math.Pow((double)height / 2d, 2d)); //半徑L
+            double OriginalAngle = Math.Acos((width / 2d) / r) / Math.PI * 180d;  //對角線和X軸的角度θ
+            double minW = 0d, maxW = 0d, minH = 0d, maxH = 0d; //最大和最小的 X、Y座標
+            double[] drawPoint = new double[4];
+
+            drawPoint[0] = (-OriginalAngle + RotateAngle) * Math.PI / 180d;
+            drawPoint[1] = (OriginalAngle + RotateAngle) * Math.PI / 180d;
+            drawPoint[2] = (180f - OriginalAngle + RotateAngle) * Math.PI / 180d;
+            drawPoint[3] = (180f + OriginalAngle + RotateAngle) * Math.PI / 180d;
+
+            foreach (double point in drawPoint) //由四個角的點算出X、Y的最大值及最小值
+            {
+                double x = r * Math.Cos(point);
+                double y = r * Math.Sin(point);
+
+                if (x < minW)
+                    minW = x;
+                if (x > maxW)
+                    maxW = x;
+                if (y < minH)
+                    minH = y;
+                if (y > maxH)
+                    maxH = y;
+            }
+
+            return new Size((int)(maxW - minW), (int)(maxH - minH));
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        //旋轉圖片之函式
+        //參數    image：要旋轉的圖片  RotateAngle：旋轉角度
+        private Bitmap RotateBitmap(Bitmap image, float RotateAngle)
         {
-            if (timer1.Interval == 1500)
+            Size newSize = CalculateNewSize(image.Width, image.Height, RotateAngle);
+            Bitmap rotatedBmp = new Bitmap(newSize.Width, newSize.Height);
+            PointF centerPoint = new PointF((float)rotatedBmp.Width / 2f, (float)rotatedBmp.Height / 2f);
+            Graphics g = Graphics.FromImage(rotatedBmp);
+
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
+            g.TranslateTransform(centerPoint.X, centerPoint.Y);
+            g.RotateTransform(RotateAngle);
+            g.TranslateTransform(-centerPoint.X, -centerPoint.Y);
+
+            g.DrawImage(image, (float)(newSize.Width - image.Width) / 2f, (float)(newSize.Height - image.Height) / 2f, image.Width, image.Height);
+            g.Dispose();
+
+            return rotatedBmp;
+        }
+
+        private void Angle90ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
             {
-                tooltip tooltip = new tooltip(tempLabel);
-                tooltip.BringToFront();
-                tooltip.Show();
+                try
+                {
+                    Bitmap bitmap;
+                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 90);
+                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+                    MessageBox.Show("轉換成功");
+                }
+                catch (OutOfMemoryException ex)
+                {
+                }
             }
         }
 
-        private void EditImageForm_Load(object sender, EventArgs e)
+        private void Angle180ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ManagerSystem.Module.MySQLT.setDataBase("127.0.0.1", "managersystem", "123456789", "root", 3306);
-            conn = MySQLT.getMySqlConnection();
-            conn.Open();
+            if (pictureBoxMain.Image != null)
+            {
+                try
+                {
+                    Bitmap bitmap;
+                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 180);
+                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+                    MessageBox.Show("轉換成功");
+                }
+                catch (OutOfMemoryException ex)
+                {
+                }
+            }
         }
 
-        private void EditImageForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void Angle270ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            conn.Close();
+            if (pictureBoxMain.Image != null)
+            {
+                try
+                {
+                    Bitmap bitmap;
+                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 270);
+                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+                    MessageBox.Show("轉換成功");
+                }
+                catch (OutOfMemoryException ex)
+                {
+                }
+            }
+        }
+
+        private void Angle360ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
+            {
+                try
+                {
+                    Bitmap bitmap;
+                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 360);
+                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+                    MessageBox.Show("轉換成功");
+                }
+                catch (OutOfMemoryException ex)
+                {
+                }
+            }
+        }
+
+        private void toolStripDropDownSave_Click(object sender, EventArgs e)
+        {
+            SaveConfig(pictureBoxMain.Controls);
         }
     }
 }
