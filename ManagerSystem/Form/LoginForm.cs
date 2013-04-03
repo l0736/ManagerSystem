@@ -36,7 +36,8 @@ namespace ManagerSystem
                     MySqlDataReader data = MySQLT.cmd.ExecuteReader();
                     if (data.HasRows == true)
                     {
-                        new MainForm().Show(this);
+                        data.Close();
+                        new EditImageForm().Show();
                         this.Hide();
                     }
                     else
@@ -65,6 +66,16 @@ namespace ManagerSystem
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             new CreateAccountForm().ShowDialog();
+        }
+
+        public void LoginForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Show();
+        }
+
+        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Dispose();
         }
     }
 }

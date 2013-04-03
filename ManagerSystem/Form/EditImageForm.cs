@@ -13,149 +13,199 @@ namespace ManagerSystem
 {
     public partial class EditImageForm : Form
     {
-        private static PictureBox[] picBoxList = new PictureBox[5];
         private static Dictionary<int, String> imagesDic = new Dictionary<int, string>();
         private static Boolean isTag = false;
         private static Boolean isInit = false;
         private static Label shareLabel = null;
-        private static String tempLabel;
-        private static String projectName;
 
         public EditImageForm()
         {
             InitializeComponent();
-            setListNmae();
+            AddListNmae();
             init();
         }
 
         private void init()
         {
-            panel.Enabled = false;
             pictureBoxMain.Enabled = false;
-            picBoxList[0] = this.pictureBoxList1;
-            picBoxList[1] = this.pictureBoxList2;
-            picBoxList[2] = this.pictureBoxList3;
-            picBoxList[3] = this.pictureBoxList4;
-            picBoxList[4] = this.pictureBoxList5;
-
-            picBoxList[0].Click += new EventHandler(pictureBox_Click);
-            picBoxList[1].Click += new EventHandler(pictureBox_Click);
-            picBoxList[2].Click += new EventHandler(pictureBox_Click);
-            picBoxList[3].Click += new EventHandler(pictureBox_Click);
-            picBoxList[4].Click += new EventHandler(pictureBox_Click);
             pictureBoxMain.SendToBack();
+            OpenImageToolStripMenuItem.DropDown.DropShadowEnabled = true;
+            this.FormClosing += new FormClosingEventHandler(new LoginForm().LoginForm_FormClosing);
             this.Click += new EventHandler(allObjectClick);
             foreach (Control con in Controls)
             {
-                //判斷是否屬於Panel
-                if (con.GetType().Name == "Panel")
+                con.Click += new EventHandler(allObjectClick);
+            }
+        }
+
+        /*
+         Event
+         */
+
+        private void pictureBox_Click(object sender, EventArgs e)
+        {
+            if (((MouseEventArgs)e).Button == MouseButtons.Left && isTag == false)
+            {
+                //判斷是否為空
+                if (((PictureBox)sender).Image != null)
                 {
-                    con.Click += new EventHandler(allObjectClick);
-                }
-                else
-                {
-                    con.Click += new EventHandler(allObjectClick);
+                    pictureBoxMain.Controls.Clear();
+
+                    //將點擊的照片給予主照片區
+                    pictureBoxMain.Image = ((PictureBox)sender).Image;
+                    this.pictureBoxMain.Image = ((PictureBox)sender).Image;
+                    ReadConfig(this.pictureBoxMain.Controls);
                 }
             }
         }
 
-        private void setListNmae()
+        private void allObjectClick(object sender, EventArgs e)
         {
-            if (Directory.Exists(DataPath.GetImagePath()))
+            if (((MouseEventArgs)e).Button == MouseButtons.Right && isTag == true)
             {
-                string[] dirs = Directory.GetDirectories(DataPath.GetImagePath());
+                this.Cursor = Cursors.Default;
+                isTag = false;
+            }
+        }
 
-                if (dirs.Length >= 1)
+        private void pictureBoxMain_DoubleClick(object sender, EventArgs e)
+        {
+            //Get MouseEventArgs
+            MouseEventArgs mouse = ((MouseEventArgs)e);
+
+            //判斷滑鼠按鈕
+            if (isTag == true && mouse.Button == MouseButtons.Left)
+            {
+                //Initialization label
+                Label label = new Label();
+                label.DoubleClick += new EventHandler(label_DoubleClick);
+                label.MouseDown += new MouseEventHandler(label_MouseDown);
+                label.BackColor = Color.White;
+                label.BringToFront();
+                label.AutoSize = true;
+
+                //Share Label
+                SetShareLabel(label);
+
+                TextBox textbox = new TextBox();
+                textbox.KeyDown += new KeyEventHandler(textBox_KeyDown);
+                textbox.BringToFront();
+
+                //設定新位置
+                label.Location = new Point(mouse.X, mouse.Y);
+                textbox.Location = new Point(mouse.X, mouse.Y);
+                pictureBoxMain.Controls.Add(label);
+                pictureBoxMain.Controls.Add(textbox);
+            }
+        }
+
+        private void textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox point = (TextBox)sender;
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (!point.Text.Equals(""))
                 {
-                    toolStripDropDownList.ShowDropDownArrow = true;
-                    foreach (string name in dirs)
-                    {
-                        //取得資料夾名稱
-                        String fileName = name.Substring(name.LastIndexOf('\\') + 1);
+                    //Share data
+                    SetShareString(point.Text);
 
-                        //新增名稱到清單上
-                        addNewItems(fileName);
-                    }
+                    //Release resource
+                    point.Dispose();
                 }
             }
         }
 
-        private void setListName(String name)
+        private void label_MouseDown(object sender, MouseEventArgs e)
         {
-            Boolean isSet = false;
-
-            //是否有其他資料
-            if (toolStripDropDownList.ShowDropDownArrow)
+            if (e.Clicks == 2 && e.Button == MouseButtons.Right)
             {
-                int length = toolStripDropDownList.DropDownItems.Count;
-                for (int index = 0; index < length; index++)
+                SearchDataForm form = new SearchDataForm(((Label)sender).Text);
+                try
                 {
-                    if (toolStripDropDownList.DropDownItems[index].Text.Equals(name))
-                    {
-                        isSet = true;
-                        break;
-                    }
+                    form.SendToBack();
+                    form.Show();
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    form.Dispose();
+                }
+            }
+        }
+
+        private void label_DoubleClick(object sender, EventArgs e)
+        {
+            //Setting label
+            Label label = (Label)sender;
+            label.Visible = false;
+            SetShareLabel(label);
+            TextBox textbox = new TextBox();
+            textbox.Location = label.Location;
+            textbox.KeyDown += new KeyEventHandler(textBox_KeyDown);
+            textbox.BringToFront();
+            textbox.Focus();
+            pictureBoxMain.Controls.Add(textbox);
+        }
+
+        private void toolStripDropDownSave_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void Angle360ToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (pictureBoxMain.Image != null)
+            {
+                try
+                {
+                    Bitmap bitmap;
+                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 90);
+                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
+                    MessageBox.Show("轉換成功");
+                }
+                catch (OutOfMemoryException ex)
+                {
+                }
+            }
+        }
+
+        private void ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+
+            //取得檔案名稱
+            String fileName = DataPath.GetImagePath(item.OwnerItem.Text) + @"\" + item.Text + ".jpeg";
+
+            //確認檔案是否存在
+            if (File.Exists(fileName))
+            {
+                Byte[] b;
+
+                //將檔案讀入
+                using (FileStream fs = new FileStream(fileName, FileMode.Open))
+                {
+                    //建立相對應長度資料
+                    b = new byte[fs.Length];
+
+                    //讀入資料
+                    fs.Read(b, 0, b.Length);
                 }
 
-                if (!isSet)
+                //將空間讀入記憶體
+                using (MemoryStream ms = new MemoryStream(b))
                 {
-                    //新增名稱到清單上
-                    addNewItems(name);
+                    //Loaded image from memory stream
+                    pictureBoxMain.Image = Image.FromStream(ms);
                 }
+
+                //Release memory space
+                b = null;
             }
             else
             {
-                toolStripDropDownList.ShowDropDownArrow = true;
-
-                //新增名稱到清單上
-                addNewItems(name);
+                MessageBox.Show("檔案不存在喔！！");
             }
         }
 
-        private void addNewItems(String name)
-        {
-            ToolStripMenuItem newItem = new ToolStripMenuItem(name);
-            newItem.Click += new EventHandler(newStripMenuItem_Click);
-            toolStripDropDownList.DropDownItems.Add(newItem);
-        }
-
-        private void newStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //取得MenuItem Name
-            String name = ((ToolStripMenuItem)sender).Text;
-            projectName = name;
-
-            //取得資料夾底下所有檔案
-            string[] dirlist = Directory.GetFiles(DataPath.GetImagePath(name));
-            if (dirlist.Length > 0)
-            {
-                pictureBoxMain.Enabled = true;
-                panel.Enabled = true;
-                int index = 0;
-                imagesDic = new Dictionary<int, string>();
-                foreach (string str in dirlist)
-                {
-                    imagesDic.Add(index, str);
-                    index++;
-                }
-
-                for (index = 0; index < imagesDic.Values.Count; index++)
-                {
-                    if (imagesDic[index].ToString().EndsWith(".jpeg"))
-                    {
-                        FileStream fs = new FileStream(imagesDic[index], FileMode.Open);
-                        Byte[] data = new Byte[fs.Length];
-                        fs.Read(data, 0, data.Length);
-                        fs.Close();
-                        MemoryStream memory = new MemoryStream(data);
-                        picBoxList[index].Image = Image.FromStream(memory);
-                        memory.Dispose();
-                    }
-                }
-            }
-        }
-
-        private void toolStripSplitLoad_Click(object sender, EventArgs e)
+        private void ImportImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "PDF|*.pdf";
@@ -170,6 +220,65 @@ namespace ManagerSystem
                 int endIndex = fileDialog.SafeFileName.IndexOf('.');
                 String fileName = fileDialog.SafeFileName.Substring(0, endIndex);
                 PDFtoImage(fileDialog.FileName, fileName);
+            }
+        }
+
+        private void toolStripDropDownList_Click(object sender, EventArgs e)
+        {
+        }
+
+        private void TagLabelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //表示已經有tag
+            isTag = true;
+            Image image = Properties.Resources.Tag;
+            Cursor cursor = new Cursor(new Bitmap(image).GetHicon());
+            this.Cursor = cursor;
+        }
+
+        private void SaveLabelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveConfig(pictureBoxMain.Controls);
+        }
+
+        private void OpenImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
+
+        /*Method
+        */
+
+        private void AddListNmae(String name)
+        {
+        }
+
+        private void AddListNmae()
+        {
+            if (Directory.Exists(DataPath.GetImagePath()))
+            {
+                string[] dirs = Directory.GetDirectories(DataPath.GetImagePath());
+
+                if (dirs.Length >= 1)
+                {
+                    foreach (string name in dirs)
+                    {
+                        //取得資料夾名稱
+                        String fileName = name.Substring(name.LastIndexOf('\\') + 1);
+                        ToolStripMenuItem item = new ToolStripMenuItem(fileName);
+                        string[] images = Directory.GetFiles(DataPath.GetImagePath() + "\\" + fileName);
+                        OpenImageToolStripMenuItem.DropDown.Items.Add(item);
+                        foreach (String image in images)
+                        {
+                            if (image.EndsWith(".jpeg"))
+                            {
+                                int length = image.LastIndexOf(".") - 1 - image.LastIndexOf('\\');
+                                ToolStripMenuItem items = new ToolStripMenuItem(image.Substring(image.LastIndexOf('\\') + 1, length));
+                                items.Click += new EventHandler(ToolStripMenuItem_Click);
+                                item.DropDown.Items.Add(items);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -245,7 +354,8 @@ namespace ManagerSystem
                 Marshal.ReleaseComObject(pdfDoc);
 
                 //加入到清單
-                setListName(name);
+                AddListNmae(name);
+
                 MessageBox.Show("轉換成功");
             }
             else
@@ -254,26 +364,9 @@ namespace ManagerSystem
             }
         }
 
-        private void pictureBox_Click(object sender, EventArgs e)
-        {
-            if (((MouseEventArgs)e).Button == MouseButtons.Left && isTag == false)
-            {
-                //判斷是否為空
-                if (((PictureBox)sender).Image != null)
-                {
-                    pictureBoxMain.Controls.Clear();
-
-                    //將點擊的照片給予主照片區
-                    pictureBoxMain.Image = ((PictureBox)sender).Image;
-                    this.pictureBoxMain.Image = ((PictureBox)sender).Image;
-                    ReadConfig(this.pictureBoxMain.Controls);
-                }
-            }
-        }
-
         private void ReadConfig(Control.ControlCollection controls)
         {
-            String configPath = DataPath.GetConfigPath(projectName, "pic.config");
+            String configPath = DataPath.GetConfigPath("projectName", "pic.config");
             StreamReader reader;
 
             if (File.Exists(configPath))
@@ -314,7 +407,7 @@ namespace ManagerSystem
             try
             {
                 StreamReader reader;
-                String configPath = DataPath.GetConfigPath(projectName, "pic.config");
+                String configPath = DataPath.GetConfigPath("projectName", "pic.config");
                 if (!File.Exists(configPath))
                 {
                     File.Create(configPath);
@@ -347,83 +440,13 @@ namespace ManagerSystem
             }
         }
 
-        private void toolStripDropDownTag_Click(object sender, EventArgs e)
-        {
-            //表示已經有tag
-            isTag = true;
-            Image image = Properties.Resources.Tag;
-            Cursor cursor = new Cursor(new Bitmap(image).GetHicon());
-            this.Cursor = cursor;
-        }
-
-        private void EditImageForm_MouseMove(object sender, MouseEventArgs e)
-        {
-            //  Label label = new Label();
-            //   label.Location = new Point(e.X, e.Y);
-            //   label.BringToFront();
-            //  this.Controls.Add(label);
-
-            //    label.Location = new Point(e.X, e.Y);
-        }
-
-        /*
-        private void pictureBoxList_Click(object sender, EventArgs e)
-        {
-            if (((PictureBox)sender).Image != null)
-            {
-                this.pictureBoxMain.Controls.Clear();
-                newImage(sender);
-            }
-        }
-        */
-
         private void newImage(object sender)
         {
             this.pictureBoxMain.Image = ((PictureBox)sender).Image;
             ReadConfig(this.pictureBoxMain.Controls);
         }
 
-        private void allObjectClick(object sender, EventArgs e)
-        {
-            if (((MouseEventArgs)e).Button == MouseButtons.Right && isTag == true)
-            {
-                this.Cursor = Cursors.Default;
-                isTag = false;
-            }
-        }
-
-        private void pictureBoxMain_DoubleClick(object sender, EventArgs e)
-        {
-            //Get MouseEventArgs
-            MouseEventArgs mouse = ((MouseEventArgs)e);
-
-            //判斷滑鼠按鈕
-            if (isTag == true && mouse.Button == MouseButtons.Left)
-            {
-                //Initialization label
-                Label label = new Label();
-                label.DoubleClick += new EventHandler(label_DoubleClick);
-                label.MouseDown += new MouseEventHandler(label_MouseDown);
-                label.BackColor = Color.White;
-                label.BringToFront();
-                label.AutoSize = true;
-
-                //Share Label
-                setShareLabel(label);
-
-                TextBox textbox = new TextBox();
-                textbox.KeyDown += new KeyEventHandler(textBox_KeyDown);
-                textbox.BringToFront();
-
-                //設定新位置
-                label.Location = new Point(mouse.X, mouse.Y);
-                textbox.Location = new Point(mouse.X, mouse.Y);
-                pictureBoxMain.Controls.Add(label);
-                pictureBoxMain.Controls.Add(textbox);
-            }
-        }
-
-        private void setShareLabel(Label label)
+        private void SetShareLabel(Label label)
         {
             if (label != null)
             {
@@ -431,7 +454,7 @@ namespace ManagerSystem
             }
         }
 
-        private void setShareString(String str)
+        private void SetShareString(String str)
         {
             if (shareLabel != null)
             {
@@ -457,87 +480,6 @@ namespace ManagerSystem
 
             //Release resource
             shareLabel = null;
-        }
-
-        private void textBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            TextBox point = (TextBox)sender;
-            if (e.KeyCode == Keys.Enter)
-            {
-                if (!point.Text.Equals(""))
-                {
-                    //Share data
-                    setShareString(point.Text);
-
-                    //Release resource
-                    point.Dispose();
-                }
-            }
-        }
-
-        private void label_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Clicks == 2 && e.Button == MouseButtons.Right)
-            {
-                SearchDataForm form = new SearchDataForm(((Label)sender).Text);
-                try
-                {
-                    form.SendToBack();
-                    form.Show();
-                }
-                catch (ObjectDisposedException ex)
-                {
-                    form.Dispose();
-                }
-            }
-        }
-
-        private void label_DoubleClick(object sender, EventArgs e)
-        {
-            //Setting label
-            Label label = (Label)sender;
-            label.Visible = false;
-            setShareLabel(label);
-            TextBox textbox = new TextBox();
-            textbox.Location = label.Location;
-            textbox.KeyDown += new KeyEventHandler(textBox_KeyDown);
-            textbox.BringToFront();
-            textbox.Focus();
-            pictureBoxMain.Controls.Add(textbox);
-        }
-
-        private void label_MouseHover(object sender, EventArgs e)
-        {
-            String sql = "SELECT * FROM inventory WHERE ProductNumber='" + this.Text.ToString() + "'";
-
-            MySQLT.cmd = new MySqlCommand(sql, MySQLT.getMySqlConnection());
-            ToolTip tip = new ToolTip();
-            tip.ForeColor = Color.Red;
-            tip.BackColor = Color.DarkBlue;
-            tip.AutoPopDelay = 2000;
-
-            try
-            {
-                MySqlDataReader data = MySQLT.cmd.ExecuteReader();
-
-                if (data.HasRows == true)
-                {
-                    tempLabel = this.Text;
-                    tip.SetToolTip(this, "請稍等兩秒後出現編輯視窗");
-                }
-                else
-                {
-                    MessageBox.Show("零件庫沒有該資料喔");
-                }
-                data.Close();
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            catch (MySqlException ex)
-            {
-            }
         }
 
         private Size CalculateNewSize(int width, int height, double RotateAngle)
@@ -591,79 +533,6 @@ namespace ManagerSystem
             g.Dispose();
 
             return rotatedBmp;
-        }
-
-        private void Angle90ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pictureBoxMain.Image != null)
-            {
-                try
-                {
-                    Bitmap bitmap;
-                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 90);
-                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
-                    MessageBox.Show("轉換成功");
-                }
-                catch (OutOfMemoryException ex)
-                {
-                }
-            }
-        }
-
-        private void Angle180ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pictureBoxMain.Image != null)
-            {
-                try
-                {
-                    Bitmap bitmap;
-                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 180);
-                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
-                    MessageBox.Show("轉換成功");
-                }
-                catch (OutOfMemoryException ex)
-                {
-                }
-            }
-        }
-
-        private void Angle270ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pictureBoxMain.Image != null)
-            {
-                try
-                {
-                    Bitmap bitmap;
-                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 270);
-                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
-                    MessageBox.Show("轉換成功");
-                }
-                catch (OutOfMemoryException ex)
-                {
-                }
-            }
-        }
-
-        private void Angle360ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (pictureBoxMain.Image != null)
-            {
-                try
-                {
-                    Bitmap bitmap;
-                    bitmap = RotateBitmap(new Bitmap(pictureBoxMain.Image), 360);
-                    pictureBoxMain.Image = Image.FromHbitmap(bitmap.GetHbitmap());
-                    MessageBox.Show("轉換成功");
-                }
-                catch (OutOfMemoryException ex)
-                {
-                }
-            }
-        }
-
-        private void toolStripDropDownSave_Click(object sender, EventArgs e)
-        {
-            SaveConfig(pictureBoxMain.Controls);
         }
     }
 }
