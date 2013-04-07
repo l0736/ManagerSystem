@@ -17,6 +17,7 @@ namespace ManagerSystem
         private static Boolean isTag = false;
         private static Boolean isInit = false;
         private static Label shareLabel = null;
+        private LoginForm loginForm;
 
         public EditImageForm()
         {
@@ -25,10 +26,25 @@ namespace ManagerSystem
             init();
         }
 
+        public EditImageForm(LoginForm loginForm)
+        {
+            InitializeComponent();
+            AddListNmae();
+            init();
+            this.loginForm = loginForm;
+            this.UserNameToolStripMenuItem.Text = this.loginForm.GetUserName() + "  先生/小姐您好";
+
+            //this.pictureBoxMain.ContextMenuStrip = contextMenuStrip;
+
+            this.ContextMenuStrip = contextMenuStrip;
+
+            //pictureBoxMain.Controls.Add(menuStrip);
+        }
+
         private void init()
         {
             pictureBoxMain.Enabled = false;
-            pictureBoxMain.SendToBack();
+
             OpenImageToolStripMenuItem.DropDown.DropShadowEnabled = true;
             this.FormClosing += new FormClosingEventHandler(new LoginForm().LoginForm_FormClosing);
             this.Click += new EventHandler(allObjectClick);
@@ -54,6 +70,7 @@ namespace ManagerSystem
                     //將點擊的照片給予主照片區
                     pictureBoxMain.Image = ((PictureBox)sender).Image;
                     this.pictureBoxMain.Image = ((PictureBox)sender).Image;
+
                     ReadConfig(this.pictureBoxMain.Controls);
                 }
             }
@@ -198,6 +215,7 @@ namespace ManagerSystem
 
                 //Release memory space
                 b = null;
+                ReadConfig(this.pictureBoxMain.Controls, DataPath.GetImagePath(item.OwnerItem.Text));
             }
             else
             {
@@ -361,6 +379,45 @@ namespace ManagerSystem
             else
             {
                 MessageBox.Show("檔案可能損毀或建立了");
+            }
+        }
+
+        private void ReadConfig(Control.ControlCollection controls, String project)
+        {
+            String configPath = DataPath.GetConfigPath(project);
+            StreamReader reader;
+
+            MessageBox.Show(configPath);
+            if (File.Exists(configPath))
+            {
+                reader = new StreamReader(configPath);
+                String str;
+                while ((str = reader.ReadLine()) != null)
+                {
+                    try
+                    {
+                        if (str.Equals("[0]") || str.Equals("END"))
+                        {
+                        }
+                        else
+                        {
+                            String[] ary = str.Split(',');
+                            Label label = new Label();
+                            label.Text = ary[0];
+                            label.Location = new Point(Convert.ToInt32(ary[1]), Convert.ToInt32(ary[2]));
+                            label.SendToBack();
+                            label.DoubleClick += new EventHandler(label_DoubleClick);
+                            label.MouseDown += new MouseEventHandler(label_MouseDown);
+                            label.BackColor = Color.White;
+                            label.AutoSize = true;
+                            controls.Add(label);
+                        }
+                    }
+                    catch (IndexOutOfRangeException ex)
+                    {
+                    }
+                }
+                reader.Close();
             }
         }
 
@@ -533,6 +590,22 @@ namespace ManagerSystem
             g.Dispose();
 
             return rotatedBmp;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            loginForm.Close();
+        }
+
+        private void logouttoolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            loginForm.Show();
+            this.Dispose();
+        }
+
+        private void TagToolStripMenuItem_Click(object sender, EventArgs e)
+        {
         }
     }
 }

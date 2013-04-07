@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using ManagerSystem.Module;
 using MySql.Data.MySqlClient;
@@ -13,9 +14,20 @@ namespace ManagerSystem
 {
     public partial class LoginForm : Form
     {
+        private String userName;
+
         public LoginForm()
         {
-            InitializeComponent();
+            Boolean isOpen;
+            Mutex mutex = new Mutex(false, "ManagerSystem", out isOpen);
+            if (isOpen)
+            {
+                InitializeComponent();
+            }
+            else
+            {
+                this.Close();
+            }
         }
 
         private void login_system_btn_login_Click(object sender, EventArgs e)
@@ -36,8 +48,11 @@ namespace ManagerSystem
                     MySqlDataReader data = MySQLT.cmd.ExecuteReader();
                     if (data.HasRows == true)
                     {
+                        data.Read();
+                        SetUserName(Convert.ToString(data[1]));
                         data.Close();
-                        new EditImageForm().Show();
+
+                        new EditImageForm(this).Show();
                         this.Hide();
                     }
                     else
@@ -50,6 +65,21 @@ namespace ManagerSystem
                 {
                 }
             }
+        }
+
+        private void SetUserName(String name)
+        {
+            this.userName = name;
+        }
+
+        public void SetUserName()
+        {
+            this.userName = default(String);
+        }
+
+        public String GetUserName()
+        {
+            return this.userName;
         }
 
         private void button_Exit_Click(object sender, EventArgs e)

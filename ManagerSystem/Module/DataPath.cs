@@ -37,5 +37,10 @@ namespace ManagerSystem.Module
         {
             return GetNewFolder(projectName) + @"\" + configName;
         }
+
+        protected internal static String GetConfigPath(String projectName)
+        {
+            return projectName + @"\pic.config";
+        }
     }
 }

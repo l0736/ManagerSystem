@@ -28,44 +28,38 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pictureBoxMain = new System.Windows.Forms.PictureBox();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.ImportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TagLabelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveLabelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Angle90ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Angle180ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Angle270ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Angle360ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logouttoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.UserNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.TagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
-            this.menuStrip1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBoxMain
             // 
-            this.pictureBoxMain.Location = new System.Drawing.Point(104, 66);
+            this.pictureBoxMain.Location = new System.Drawing.Point(12, 27);
             this.pictureBoxMain.Name = "pictureBoxMain";
-            this.pictureBoxMain.Size = new System.Drawing.Size(753, 607);
+            this.pictureBoxMain.Size = new System.Drawing.Size(990, 711);
             this.pictureBoxMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxMain.TabIndex = 2;
             this.pictureBoxMain.TabStop = false;
             this.pictureBoxMain.DoubleClick += new System.EventHandler(this.pictureBoxMain_DoubleClick);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ImportImageToolStripMenuItem,
-            this.OpenImageToolStripMenuItem,
-            this.TagLabelToolStripMenuItem,
-            this.SaveLabelToolStripMenuItem,
-            this.ToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1014, 24);
-            this.menuStrip1.TabIndex = 4;
-            this.menuStrip1.Text = "menuStrip1";
             // 
             // ImportImageToolStripMenuItem
             // 
@@ -80,13 +74,6 @@
             this.OpenImageToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
             this.OpenImageToolStripMenuItem.Text = "開啟零件圖";
             this.OpenImageToolStripMenuItem.Click += new System.EventHandler(this.OpenImageToolStripMenuItem_Click);
-            // 
-            // TagLabelToolStripMenuItem
-            // 
-            this.TagLabelToolStripMenuItem.Name = "TagLabelToolStripMenuItem";
-            this.TagLabelToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.TagLabelToolStripMenuItem.Text = "標記";
-            this.TagLabelToolStripMenuItem.Click += new System.EventHandler(this.TagLabelToolStripMenuItem_Click);
             // 
             // SaveLabelToolStripMenuItem
             // 
@@ -131,20 +118,85 @@
             this.Angle360ToolStripMenuItem.Text = "旋轉360度";
             this.Angle360ToolStripMenuItem.Click += new System.EventHandler(this.Angle360ToolStripMenuItem_Click_1);
             // 
+            // logouttoolStripMenuItem
+            // 
+            this.logouttoolStripMenuItem.Name = "logouttoolStripMenuItem";
+            this.logouttoolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.logouttoolStripMenuItem.Text = "登出";
+            this.logouttoolStripMenuItem.Click += new System.EventHandler(this.logouttoolStripMenuItem_Click);
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ImportImageToolStripMenuItem,
+            this.OpenImageToolStripMenuItem,
+            this.SaveLabelToolStripMenuItem,
+            this.ToolStripMenuItem,
+            this.UserNameToolStripMenuItem,
+            this.logouttoolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(1014, 24);
+            this.menuStrip.TabIndex = 4;
+            this.menuStrip.Text = "menuStrip1";
+            // 
+            // UserNameToolStripMenuItem
+            // 
+            this.UserNameToolStripMenuItem.Name = "UserNameToolStripMenuItem";
+            this.UserNameToolStripMenuItem.Size = new System.Drawing.Size(97, 20);
+            this.UserNameToolStripMenuItem.Text = "先生/小姐您好";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.exitToolStripMenuItem.Text = "離開";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TagToolStripMenuItem,
+            this.EditTagToolStripMenuItem,
+            this.SaveTagToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(153, 92);
+            // 
+            // TagToolStripMenuItem
+            // 
+            this.TagToolStripMenuItem.Name = "TagToolStripMenuItem";
+            this.TagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.TagToolStripMenuItem.Text = "標記";
+            this.TagToolStripMenuItem.Click += new System.EventHandler(this.TagToolStripMenuItem_Click);
+            // 
+            // EditTagToolStripMenuItem
+            // 
+            this.EditTagToolStripMenuItem.Name = "EditTagToolStripMenuItem";
+            this.EditTagToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.EditTagToolStripMenuItem.Text = "編輯標籤";
+            // 
+            // SaveTagToolStripMenuItem
+            // 
+            this.SaveTagToolStripMenuItem.Name = "SaveTagToolStripMenuItem";
+            this.SaveTagToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.SaveTagToolStripMenuItem.Text = "儲存標籤";
+            // 
             // EditImageForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1014, 750);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.pictureBoxMain);
-            this.MainMenuStrip = this.menuStrip1;
+            this.MainMenuStrip = this.menuStrip;
             this.Name = "EditImageForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "EditImage";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,16 +205,22 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBoxMain;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem ImportImageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenImageToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem TagLabelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveLabelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Angle90ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Angle180ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Angle270ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Angle360ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem logouttoolStripMenuItem;
+        private System.Windows.Forms.MenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem UserNameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem TagToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem EditTagToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SaveTagToolStripMenuItem;
     }
 }
