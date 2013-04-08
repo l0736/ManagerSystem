@@ -40,7 +40,7 @@ namespace ManagerSystem.Module
 
         protected internal static String GetConfigPath(String projectName)
         {
-            return projectName + @"\pic.config";
+            return projectName + @"\Tag.config";
         }
     }
 }

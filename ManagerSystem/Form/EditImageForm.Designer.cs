@@ -45,7 +45,12 @@
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.TagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RemoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
@@ -53,13 +58,14 @@
             // 
             // pictureBoxMain
             // 
+            this.pictureBoxMain.Enabled = false;
             this.pictureBoxMain.Location = new System.Drawing.Point(12, 27);
             this.pictureBoxMain.Name = "pictureBoxMain";
             this.pictureBoxMain.Size = new System.Drawing.Size(990, 711);
             this.pictureBoxMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxMain.TabIndex = 2;
             this.pictureBoxMain.TabStop = false;
-            this.pictureBoxMain.DoubleClick += new System.EventHandler(this.pictureBoxMain_DoubleClick);
+            this.pictureBoxMain.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBoxMain_MouseClick);
             // 
             // ImportImageToolStripMenuItem
             // 
@@ -73,7 +79,6 @@
             this.OpenImageToolStripMenuItem.Name = "OpenImageToolStripMenuItem";
             this.OpenImageToolStripMenuItem.Size = new System.Drawing.Size(80, 20);
             this.OpenImageToolStripMenuItem.Text = "開啟零件圖";
-            this.OpenImageToolStripMenuItem.Click += new System.EventHandler(this.OpenImageToolStripMenuItem_Click);
             // 
             // SaveLabelToolStripMenuItem
             // 
@@ -98,25 +103,28 @@
             this.Angle90ToolStripMenuItem.Name = "Angle90ToolStripMenuItem";
             this.Angle90ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.Angle90ToolStripMenuItem.Text = "旋轉90度";
+            this.Angle90ToolStripMenuItem.Click += new System.EventHandler(this.Angle90ToolStripMenuItem_Click);
             // 
             // Angle180ToolStripMenuItem
             // 
             this.Angle180ToolStripMenuItem.Name = "Angle180ToolStripMenuItem";
             this.Angle180ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.Angle180ToolStripMenuItem.Text = "旋轉180度";
+            this.Angle180ToolStripMenuItem.Click += new System.EventHandler(this.Angle180ToolStripMenuItem_Click);
             // 
             // Angle270ToolStripMenuItem
             // 
             this.Angle270ToolStripMenuItem.Name = "Angle270ToolStripMenuItem";
             this.Angle270ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.Angle270ToolStripMenuItem.Text = "旋轉270度";
+            this.Angle270ToolStripMenuItem.Click += new System.EventHandler(this.Angle270ToolStripMenuItem_Click);
             // 
             // Angle360ToolStripMenuItem
             // 
             this.Angle360ToolStripMenuItem.Name = "Angle360ToolStripMenuItem";
             this.Angle360ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.Angle360ToolStripMenuItem.Text = "旋轉360度";
-            this.Angle360ToolStripMenuItem.Click += new System.EventHandler(this.Angle360ToolStripMenuItem_Click_1);
+            this.Angle360ToolStripMenuItem.Click += new System.EventHandler(this.Angle360ToolStripMenuItem_Click);
             // 
             // logouttoolStripMenuItem
             // 
@@ -159,14 +167,16 @@
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TagToolStripMenuItem,
             this.EditTagToolStripMenuItem,
-            this.SaveTagToolStripMenuItem});
+            this.RemoveToolStripMenuItem,
+            this.SaveTagToolStripMenuItem,
+            this.SearchToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(153, 92);
+            this.contextMenuStrip.Size = new System.Drawing.Size(153, 136);
             // 
             // TagToolStripMenuItem
             // 
             this.TagToolStripMenuItem.Name = "TagToolStripMenuItem";
-            this.TagToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.TagToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.TagToolStripMenuItem.Text = "標記";
             this.TagToolStripMenuItem.Click += new System.EventHandler(this.TagToolStripMenuItem_Click);
             // 
@@ -175,12 +185,50 @@
             this.EditTagToolStripMenuItem.Name = "EditTagToolStripMenuItem";
             this.EditTagToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.EditTagToolStripMenuItem.Text = "編輯標籤";
+            this.EditTagToolStripMenuItem.Click += new System.EventHandler(this.EditTagToolStripMenuItem_Click);
+            // 
+            // RemoveToolStripMenuItem
+            // 
+            this.RemoveToolStripMenuItem.Name = "RemoveToolStripMenuItem";
+            this.RemoveToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.RemoveToolStripMenuItem.Text = "移除標籤";
+            this.RemoveToolStripMenuItem.Click += new System.EventHandler(this.RemoveToolStripMenuItem_Click);
             // 
             // SaveTagToolStripMenuItem
             // 
             this.SaveTagToolStripMenuItem.Name = "SaveTagToolStripMenuItem";
             this.SaveTagToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.SaveTagToolStripMenuItem.Text = "儲存標籤";
+            this.SaveTagToolStripMenuItem.Click += new System.EventHandler(this.SaveTagToolStripMenuItem_Click);
+            // 
+            // SearchToolStripMenuItem
+            // 
+            this.SearchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripTextBox1,
+            this.toolStripTextBox2,
+            this.toolStripMenuItem2});
+            this.SearchToolStripMenuItem.Name = "SearchToolStripMenuItem";
+            this.SearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SearchToolStripMenuItem.Text = "查詢";
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox1.Text = "使用者名稱：";
+            this.toolStripTextBox1.DoubleClick += new System.EventHandler(this.toolStripTextBox1_DoubleClick);
+            // 
+            // toolStripTextBox2
+            // 
+            this.toolStripTextBox2.Name = "toolStripTextBox2";
+            this.toolStripTextBox2.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox2.Text = "物料名稱：";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
+            this.toolStripMenuItem2.Text = "時間查詢";
             // 
             // EditImageForm
             // 
@@ -222,5 +270,10 @@
         private System.Windows.Forms.ToolStripMenuItem TagToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EditTagToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveTagToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RemoveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
     }
 }
