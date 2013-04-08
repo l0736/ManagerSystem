@@ -14,6 +14,7 @@ namespace ManagerSystem
         public SearchDataForm()
         {
             InitializeComponent();
+            this.dataGridView.ReadOnly = true;
         }
 
         public SearchDataForm(MainForm form)
@@ -24,14 +25,58 @@ namespace ManagerSystem
             this.dataGridView.ReadOnly = true;
         }
 
-        public SearchDataForm(String text)
+        public SearchDataForm(String name, MyDataType type)
         {
-            InitializeComponent();
-            this.textBoxProductName.Text = text;
-            setGridView(MyDataType.LabelProductName);
+            if (type == MyDataType.ProductName)
+            {
+                InitializeComponent();
+                this.textBoxProductName.Text = name;
+                this.dataGridView.ReadOnly = true;
+                setGridView(getSqlString(MyDataType.ProductName));
+            }
+            else if (type == MyDataType.StaffName)
+            {
+                InitializeComponent();
+                this.textBoxStaffNmae.Text = name;
+                this.dataGridView.ReadOnly = true;
+                try
+                {
+                    MySQLT.cmd = new MySqlCommand(getSqlString(MyDataType.StaffName), MySQLT.getMySqlConnection());
+                    MySqlDataReader data = MySQLT.cmd.ExecuteReader();
+                    if (data.HasRows == true)
+                    {
+                        int staffNumber = 0;
+                        while (data.Read())
+                        {
+                            staffNumber = Convert.ToInt16(data[0].ToString());
+                        }
+                        data.Close();
+                        String sql = "SELECT * From record where UserNumber='" + staffNumber + "'";
+                        setGridView(sql);
+                    }
+                    else
+                    {
+                        data.Close();
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                }
+            }
+            else if (type == MyDataType.LabelProductName)
+            {
+                InitializeComponent();
+                this.textBoxProductName.Text = name;
+                this.dataGridView.ReadOnly = true;
+                setGridView(MyDataType.LabelProductName);
+            }
+            else
+            {
+                this.Close();
+            }
         }
 
-        private enum MyDataType : int
+        public enum MyDataType : int
         {
             Time = 1,
             StaffName = 2,

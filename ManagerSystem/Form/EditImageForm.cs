@@ -687,8 +687,83 @@ namespace ManagerSystem
             }
         }
 
-        private void toolStripTextBox1_DoubleClick(object sender, EventArgs e)
+        private void TimeSearchToolStripMenuItem_DoubleClick(object sender, EventArgs e)
         {
+        }
+
+        private void TimeSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SearchDataForm form = new SearchDataForm();
+            if (form.ShowDialog() == DialogResult.Cancel)
+            {
+                form.Dispose();
+            }
+        }
+
+        private void 進階查詢ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SearchDataForm form = new SearchDataForm();
+            if (form.ShowDialog() == DialogResult.Cancel)
+            {
+                form.Dispose();
+            }
+        }
+
+        private void 當前標籤ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SearchControl() == null)
+            {
+                MessageBox.Show("請選擇要搜尋的標籤");
+            }
+            else
+            {
+                Label label = (Label)SearchControl();
+
+                SearchDataForm form = new SearchDataForm(label.Text, SearchDataForm.MyDataType.LabelProductName);
+                if (form.ShowDialog() == DialogResult.Cancel)
+                {
+                    form.Dispose();
+                }
+            }
+        }
+
+        private void StaffToolStripTextBox_DoubleClick(object sender, EventArgs e)
+        {
+            ToolStripTextBox staff = (ToolStripTextBox)sender;
+            SearchDataForm form = new SearchDataForm(staff.Text, SearchDataForm.MyDataType.StaffName);
+            if (form.ShowDialog() == DialogResult.Cancel)
+            {
+                form.Dispose();
+            }
+        }
+
+        private void StaffToolStripTextBox_Click(object sender, EventArgs e)
+        {
+            ToolStripTextBox staff = (ToolStripTextBox)sender;
+            if (staff.Text.Equals("使用者名稱："))
+            {
+                staff.Text = "";
+            }
+        }
+
+        private void ProductToolStripTextBox_Click(object sender, EventArgs e)
+        {
+            ToolStripTextBox product = (ToolStripTextBox)sender;
+            if (product.Text.Equals("物料名稱："))
+            {
+                product.Text = "";
+            }
+        }
+
+        private void ProductToolStripTextBox_DoubleClick(object sender, EventArgs e)
+        {
+            ToolStripTextBox product = (ToolStripTextBox)sender;
+            SearchDataForm form = new SearchDataForm(product.Text, SearchDataForm.MyDataType.ProductName);
+
+            if (form.ShowDialog() == DialogResult.Cancel)
+            {
+                form.Dispose();
+            }
         }
     }
 }

@@ -48,9 +48,11 @@
             this.RemoveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveTagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.StaffToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.ProductToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.TimeSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.進階查詢ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.當前標籤ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
@@ -171,7 +173,7 @@
             this.SaveTagToolStripMenuItem,
             this.SearchToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(153, 136);
+            this.contextMenuStrip.Size = new System.Drawing.Size(125, 114);
             // 
             // TagToolStripMenuItem
             // 
@@ -204,31 +206,52 @@
             // SearchToolStripMenuItem
             // 
             this.SearchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripTextBox1,
-            this.toolStripTextBox2,
-            this.toolStripMenuItem2});
+            this.StaffToolStripTextBox,
+            this.ProductToolStripTextBox,
+            this.TimeSearchToolStripMenuItem,
+            this.進階查詢ToolStripMenuItem,
+            this.當前標籤ToolStripMenuItem});
             this.SearchToolStripMenuItem.Name = "SearchToolStripMenuItem";
-            this.SearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.SearchToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.SearchToolStripMenuItem.Text = "查詢";
             // 
-            // toolStripTextBox1
+            // StaffToolStripTextBox
             // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
-            this.toolStripTextBox1.Text = "使用者名稱：";
-            this.toolStripTextBox1.DoubleClick += new System.EventHandler(this.toolStripTextBox1_DoubleClick);
+            this.StaffToolStripTextBox.Name = "StaffToolStripTextBox";
+            this.StaffToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.StaffToolStripTextBox.Text = "使用者名稱：";
+            this.StaffToolStripTextBox.Click += new System.EventHandler(this.StaffToolStripTextBox_Click);
+            this.StaffToolStripTextBox.DoubleClick += new System.EventHandler(this.StaffToolStripTextBox_DoubleClick);
             // 
-            // toolStripTextBox2
+            // ProductToolStripTextBox
             // 
-            this.toolStripTextBox2.Name = "toolStripTextBox2";
-            this.toolStripTextBox2.Size = new System.Drawing.Size(100, 23);
-            this.toolStripTextBox2.Text = "物料名稱：";
+            this.ProductToolStripTextBox.Name = "ProductToolStripTextBox";
+            this.ProductToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.ProductToolStripTextBox.Text = "物料名稱：";
+            this.ProductToolStripTextBox.Click += new System.EventHandler(this.ProductToolStripTextBox_Click);
+            this.ProductToolStripTextBox.DoubleClick += new System.EventHandler(this.ProductToolStripTextBox_DoubleClick);
             // 
-            // toolStripMenuItem2
+            // TimeSearchToolStripMenuItem
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(160, 22);
-            this.toolStripMenuItem2.Text = "時間查詢";
+            this.TimeSearchToolStripMenuItem.Name = "TimeSearchToolStripMenuItem";
+            this.TimeSearchToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.TimeSearchToolStripMenuItem.Text = "時間查詢";
+            this.TimeSearchToolStripMenuItem.Click += new System.EventHandler(this.TimeSearchToolStripMenuItem_Click);
+            this.TimeSearchToolStripMenuItem.DoubleClick += new System.EventHandler(this.TimeSearchToolStripMenuItem_DoubleClick);
+            // 
+            // 進階查詢ToolStripMenuItem
+            // 
+            this.進階查詢ToolStripMenuItem.Name = "進階查詢ToolStripMenuItem";
+            this.進階查詢ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.進階查詢ToolStripMenuItem.Text = "進階查詢";
+            this.進階查詢ToolStripMenuItem.Click += new System.EventHandler(this.進階查詢ToolStripMenuItem_Click);
+            // 
+            // 當前標籤ToolStripMenuItem
+            // 
+            this.當前標籤ToolStripMenuItem.Name = "當前標籤ToolStripMenuItem";
+            this.當前標籤ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.當前標籤ToolStripMenuItem.Text = "當前標籤";
+            this.當前標籤ToolStripMenuItem.Click += new System.EventHandler(this.當前標籤ToolStripMenuItem_Click);
             // 
             // EditImageForm
             // 
@@ -272,8 +295,10 @@
         private System.Windows.Forms.ToolStripMenuItem SaveTagToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RemoveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripTextBox StaffToolStripTextBox;
+        private System.Windows.Forms.ToolStripTextBox ProductToolStripTextBox;
+        private System.Windows.Forms.ToolStripMenuItem TimeSearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 進階查詢ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 當前標籤ToolStripMenuItem;
     }
 }
